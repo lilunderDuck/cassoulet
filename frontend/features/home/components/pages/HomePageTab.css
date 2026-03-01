@@ -1,0 +1,10 @@
+#clickToSelect #clickToSelect__box {
+  opacity: 0.6;
+}
+
+#clickToSelect:hover #clickToSelect__box {
+  border-color: var(--mauve);
+  background-color: var(--surface-1);
+  color: var(--text);
+  opacity: 1;
+}

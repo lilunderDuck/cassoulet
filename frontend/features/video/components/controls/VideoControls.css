@@ -1,0 +1,6 @@
+#video-controls:hover,
+[data-state=paused] #video-controls,
+[data-state=finished] #video-controls {
+  background-color: var(--crust);
+  opacity: 1 !important;
+}

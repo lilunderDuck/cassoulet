@@ -1,0 +1,4 @@
+:root {
+  --progress-color: var(--sapphire);
+  --actual-progress-color: var(--flamingo);
+}

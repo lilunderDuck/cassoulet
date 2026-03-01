@@ -1,0 +1,25 @@
+:root {
+  --title-bar-thiccness: 32px;
+  --title-bar-button-padding: 7px;
+}
+
+.fullscreen [data-title-bar] {
+  display: none !important;
+}
+
+[data-title-bar] {
+  height: var(--title-bar-thiccness)
+}
+
+#buttonRow img {
+  width: calc(var(--title-bar-thiccness) - 22px);
+  height: calc(var(--title-bar-thiccness) - 22px);
+}
+
+.fullscreen #buttonRow {
+  opacity: 0;
+}
+
+.fullscreen #buttonRow:hover {
+  opacity: 1;
+}

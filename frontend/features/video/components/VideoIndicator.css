@@ -1,0 +1,7 @@
+[data-pause-indicator-showing=false] {
+  transform: translateY(-5rem);
+}
+
+[data-pause-indicator-showing=true] {
+  transform: translateY(0);
+}

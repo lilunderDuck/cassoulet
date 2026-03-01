@@ -1,0 +1,3 @@
+#sidebar > [data-is-current-page=true] {
+  background-color: var(--dark-blue) !important;
+}

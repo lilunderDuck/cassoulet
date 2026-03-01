@@ -1,0 +1,142 @@
+/* The follow CSS reset was taken from https://www.joshwcomeau.com/css/custom-css-reset/, thank! */
+:root {
+  --crust: #11111b;
+  --crust-50-opacity: #11111bc1;
+  --mantle: #181825;
+  --base: #1e1e2e;
+  --surface-0: #313244;
+  --surface-1: #45475a;
+  --surface-2: #585b70;
+  --overlay-0: #6c7086;
+  --overlay-1: #7f849c;
+  --overlay-2: #9399b2;
+  --subtext-0: #a6adc8;
+  --subtext-1: #bac2de;
+  --text: #cdd6f4;
+  --lavender: #b4befe;
+  --blue: #89b4fa;
+  --dark-blue: #2e4f84;
+  --sapphire: #74c7ec;
+  --sky: #89dceb;
+  --teal: #94e2d5;
+  --green: #a6e3a1;
+  --yellow: #f9e2af;
+  --peach: #fab387;
+  --maroon: #eba0ac;
+  --red: #f38ba8;
+  --mauve: #cba6f7;
+  --pink: #f5c2e7;
+  --flamingo: #f2cdcd;
+  --rosewater: #f5e0dc;
+
+  background-color: var(--crust);
+  color: var(--text);
+  color-scheme: dark !important;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  font-synthesis: none;
+  /* Improve text rendering */
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html, body, #root {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+}
+
+#root {
+  position: fixed;
+}
+
+*, *::before, *::after {
+  /* Use a more-intuitive box-sizing model */
+  box-sizing: border-box;
+  /* Remove default margins + borders */
+  margin: 0;
+  border: none;
+  /* outline: none; */
+  /* outline: 1px solid red; */
+}
+
+/* Improve media defaults */
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+  height: 100%;
+}
+
+/* Inherit fonts for form controls */
+input, button, textarea, select {
+  font: inherit;
+}
+
+/* Enable keyword animations */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    interpolate-size: allow-keywords;
+  }
+}
+
+/* If you try to reset the button styles, some rules won't be applied anymore for some reason */
+button {
+  cursor: pointer;
+  transition: 0.15s ease-out;
+  background-color: transparent;
+  border-radius: 0.325rem;
+}
+
+button:disabled {
+  cursor: not-allowed !important;
+}
+
+input:focus {
+  border: none;
+}
+
+/* Avoid text overflows */
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+  word-break: break-all;
+}
+
+/* Make links less ugly */
+a {
+  color: var(--surface-2);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+a:not([data-link-no-color]) {
+  color: var(--blue10);
+}
+
+a:not([data-link-no-color]):hover {
+  text-decoration: underline;
+}
+
+a[data-no-focus-highlight] {
+  user-select: none;
+  -webkit-user-drag: none;
+  -moz-user-drag: none;
+}
+
+* ::backdrop {
+  backdrop-filter: blur(2px);
+}
+
+dialog {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+  background-color: var(--crust-50-opacity);
+  backdrop-filter: blur(1px);
+}
+
+dialog:focus {
+  outline: none;
+}
