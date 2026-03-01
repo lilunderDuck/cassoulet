@@ -1,0 +1,21 @@
+{
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "backup": true,
+    "**/node_modules": true,
+    "**/*.md5": true,
+    "frontend/out": true,
+    "frontend/dist": true
+  },
+  "editor.tabSize": 2,
+  "explorer.compactFolders": false,
+  "material-icon-theme.hidesExplorerArrows": true,
+  "deno.enable": false,
+  "makefile.configureOnOpen": true,
+  "typescript.preferences.preferTypeOnlyAutoImports": true
+}
