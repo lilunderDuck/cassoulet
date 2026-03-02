@@ -28,9 +28,9 @@ type GalleryItemEntry struct {
 }
 
 var (
-	galleryFolderPath       = filepath.Join(DataPathLocation, "gallery")
-	galleryMetadataFilePath = filepath.Join(DataPathLocation, "gallery/%s/meta.json")
-	galleryItemsPath        = filepath.Join(DataPathLocation, "gallery/%s/entry")
+	GalleryFolderPath       = filepath.Join(DataPathLocation, "gallery")
+	GalleryMetadataFilePath = filepath.Join(DataPathLocation, "gallery/%s/meta.json")
+	GalleryItemsPath        = filepath.Join(DataPathLocation, "gallery/%s/entry")
 )
 
 var DEFAULT_GALLERY_DATA = []PartialGalleryMetadata{}
@@ -41,7 +41,7 @@ func (*Exports) GetAllGalleries() []PartialGalleryMetadata {
 
 func (this *Exports) ResyncGallery() ([]PartialGalleryMetadata, error) {
 	runtime.EventsEmit(this.Ctx, "gallery__gatherItems")
-	allGalleryFolder, err := os.ReadDir(galleryFolderPath)
+	allGalleryFolder, err := os.ReadDir(GalleryFolderPath)
 	if err != nil {
 		if debug.IS_ENABLED {
 			debug.FatalLabel("app/gallery", fmt.Errorf("Failed to read directory\n%s", err.Error()))
@@ -99,7 +99,7 @@ func (this *Exports) _generateMetadataFileIfNeeds(galleryId string) (*GalleryMet
 		debug.WarnLabel("app/gallery", fmt.Sprintf("Missing metadata: %s, trying to regenerate...", galleryId))
 	}
 
-	entryFiles, err := os.ReadDir(fmt.Sprintf(galleryItemsPath, galleryId))
+	entryFiles, err := os.ReadDir(fmt.Sprintf(GalleryItemsPath, galleryId))
 	if err != nil {
 		newError := fmt.Errorf(ERR_NOT_IN_CORRECT_STRUCTURE, galleryId, err.Error())
 		if debug.IS_ENABLED {
@@ -132,9 +132,9 @@ func (this *Exports) _generateMetadataFileIfNeeds(galleryId string) (*GalleryMet
 }
 
 func (*Exports) GetGalleryMetadata(galleryId string) (*GalleryMetadata, error) {
-	return utils.JSON_ReadFile[GalleryMetadata](fmt.Sprintf(galleryMetadataFilePath, galleryId))
+	return utils.JSON_ReadFile[GalleryMetadata](fmt.Sprintf(GalleryMetadataFilePath, galleryId))
 }
 
 func (*Exports) SetGalleryMetadata(galleryId string, data *GalleryMetadata) error {
-	return utils.JSON_WriteFile(fmt.Sprintf(galleryMetadataFilePath, galleryId), data)
+	return utils.JSON_WriteFile(fmt.Sprintf(GalleryMetadataFilePath, galleryId), data)
 }

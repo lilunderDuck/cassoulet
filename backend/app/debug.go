@@ -26,9 +26,9 @@ func PrintAllPaths() {
 
 	otherPaths := []string{
 		debug.FormatPath(settingFilePath),
-		debug.FormatPath(galleryMetadataFilePath),
+		debug.FormatPath(GalleryMetadataFilePath),
 		debug.FormatPath(openedFilesHistoryFilePath),
-		debug.FormatPath(galleryItemsPath),
+		debug.FormatPath(GalleryItemsPath),
 	}
 
 	debug.InfoLabel("app", fmt.Sprintf(

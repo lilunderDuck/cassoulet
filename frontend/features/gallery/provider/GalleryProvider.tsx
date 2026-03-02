@@ -1,7 +1,19 @@
-import { createContext, createResource, createSignal, ParentProps, Show, useContext, type Accessor, type Resource } from "solid-js"
+import { createContext, createEffect, createResource, createSignal, onCleanup, ParentProps, Show, useContext, type Accessor, type Resource } from "solid-js"
 import { GetGalleryMetadata } from "../../../wailsjs/go/app/Exports"
 import { app } from "../../../wailsjs/go/models"
 import { SpinningCube } from "../../../components"
+
+import stylex from "@stylexjs/stylex"
+
+const style = stylex.create({
+  loadingIcon: {
+    width: "100%",
+    height: '100%',
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center"
+  }
+})
 
 interface IGalleryContext {
   id$: string
@@ -29,33 +41,67 @@ export function GalleryProvider(props: ParentProps<IGalleryProviderProps>) {
   const [currentItem, setCurrentItem] = createSignal({} as app.GalleryItemEntry)
   const allGalleryItemsCount = () => metadataResource()!.entry.length
 
+  const toNextItem = () => {
+    setCurrentTimeIndex(prevItemIndex => {
+      if (allGalleryItemsCount() === prevItemIndex - 1) {
+        return allGalleryItemsCount()
+      }
+
+      return prevItemIndex + 1
+    })
+    console.log("next item", currentItem())
+  }
+
+  const toPreviousItem = () => {
+    setCurrentTimeIndex(prevItemIndex => {
+      if (prevItemIndex <= 0) {
+        return 0
+      }
+
+      return prevItemIndex - 1
+    })
+    console.log("prev item", currentItem())
+  }
+
+  const globalKeyboardShortcutHandler = (keyboardEvent: KeyboardEvent) => {
+    switch (keyboardEvent.key.toLowerCase()) {
+      case "d":
+      case "arrowright":
+        toNextItem()
+      break
+          
+      case "arrowleft":
+      case "a":
+        toPreviousItem()
+      break
+    }
+  }
+
+  document.addEventListener("keyup", globalKeyboardShortcutHandler)
+
+  createEffect(() => {
+    if (!metadataResource()) return
+    const currentIndex = currentItemIndex()
+    setCurrentItem(metadataResource()!.entry[currentIndex])
+  })
+
+  onCleanup(() => {
+    document.removeEventListener("keyup", globalKeyboardShortcutHandler)
+  })
+
   return (
     <Context.Provider value={{
       metadata$: metadataResource,
       id$: props.id$,
-      toNextItem$() {
-        setCurrentTimeIndex(prevItemIndex => {
-          if (allGalleryItemsCount() === prevItemIndex - 1) {
-            return allGalleryItemsCount()
-          }
-
-          return prevItemIndex + 1
-        })
-      },
-      toPreviousItem$() {
-        setCurrentTimeIndex(prevItemIndex => {
-          if (prevItemIndex <= 0) {
-            return 0
-          }
-
-          return prevItemIndex - 1
-        })
-      },
+      toNextItem$: toNextItem,
+      toPreviousItem$: toPreviousItem,
       currentItem$: currentItem,
       currentItemIndex$: currentItemIndex
     }}>
       <Show when={metadataResource()} fallback={
-        <SpinningCube cubeSize$={40} />
+        <div {...stylex.attrs(style.loadingIcon)}>
+          <SpinningCube cubeSize$={40} />
+        </div>
       }>
         {props.children}
       </Show>

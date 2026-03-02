@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"path/filepath"
-	"video_player/backend/utils"
+	"video_player/backend/app"
 )
 
 func createAssetsRoute(server *http.ServeMux) {
@@ -21,5 +21,5 @@ func createAssetsRoute(server *http.ServeMux) {
 		serveFile(res, req, requestedFile)
 	})
 
-	serveStatic(server, "/gallery", filepath.Join(utils.CURRENT_PATH, "/data/video_player/gallery"))
+	serveStatic(server, "/gallery", filepath.Join(app.GalleryFolderPath))
 }
