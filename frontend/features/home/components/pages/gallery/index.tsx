@@ -1,10 +1,11 @@
-import { For } from "solid-js";
+import { lazy } from "solid-js";
 
 import stylex from "@stylexjs/stylex"
 import { RiMediaGalleryFill } from "solid-icons/ri";
 import { GalleryItem } from "./GalleryItem";
 import AddGalleryItemButton from "./AddGalleryItemButton";
 import { CgSync } from "solid-icons/cg";
+import { Dialog } from "../../../../../components";
 
 const style = stylex.create({
   gallery: {
@@ -42,6 +43,8 @@ const style = stylex.create({
   }
 })
 
+const SyncingGalleryItemDialog = lazy(() => import("./dialog/SyncingGalleryItemDialog"))
+
 interface IGalleryPageTabProps {
   // define your component props here
 }
@@ -55,9 +58,16 @@ export default function GalleryPageTab(props: IGalleryPageTabProps) {
           Gallery
         </h2>
         <div {...stylex.attrs(style.gallery__headerButtonRow)}>
-          <button data-button data-icon data-no-background>
-            <CgSync />
-          </button>
+          <Dialog 
+            closeOnEscapeKeyDown={false} 
+            closeOnOutsideFocus={false} 
+            closeOnOutsidePointer={false}
+            Component$={SyncingGalleryItemDialog}
+          >
+            <button data-button data-icon data-no-background>
+              <CgSync />
+            </button>
+          </Dialog>
         </div>
       </div>
       <div {...stylex.attrs(style.gallery__itemList)} data-scrollbar data-scrollbar-vertical>

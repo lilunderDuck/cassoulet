@@ -21,6 +21,7 @@
     "vite-plugin-stylex-dev": "0.7.3"
   },
   "dependencies": {
+    "@corvu/dialog": "^0.2.4",
     "@solidjs/router": "^0.15.1",
     "@stylexjs/stylex": "0.7.5",
     "solid-icons": "1.1.0",

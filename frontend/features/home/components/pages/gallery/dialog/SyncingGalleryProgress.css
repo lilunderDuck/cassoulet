@@ -1,0 +1,7 @@
+#progressBarStep #progressBarStep__bar {
+  background-color: var(--surface-0);
+}
+
+#progressBarStep[data-finished=true] #progressBarStep__bar {
+  background-color: var(--blue);
+}

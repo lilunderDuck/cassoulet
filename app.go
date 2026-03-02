@@ -8,7 +8,6 @@ import (
 
 type App struct {
 	ctx context.Context
-	// windowCount int
 }
 
 // Creates a new App application struct

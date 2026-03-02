@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"os"
 	"video_player/backend/app"
 	"video_player/backend/debug"
@@ -23,6 +24,7 @@ func main() {
 
 	// Create an instance of the app structure
 	thisApp := NewApp()
+	appExports := &app.Exports{}
 
 	// Create application with options
 	err := wails.Run(&options.App{
@@ -37,10 +39,13 @@ func main() {
 			Assets: os.DirFS(app.AppsPathLocation),
 		},
 		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
-		OnStartup:        thisApp.startup,
-		Bind: []interface{}{
+		OnStartup: func(ctx context.Context) {
+			thisApp.startup(ctx)
+			appExports.Ctx = ctx
+		},
+		Bind: []any{
 			thisApp,
-			&app.Exports{},
+			appExports,
 		},
 	})
 

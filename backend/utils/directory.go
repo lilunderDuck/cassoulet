@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"video_player/backend/debug"
 )
 
@@ -14,7 +15,7 @@ func TryGettingCurrentExecPath() string {
 		executablePath, err := os.Executable()
 		if err != nil {
 			if debug.IS_ENABLED {
-				debug.FatalLabel("cmd", err)
+				debug.FatalLabel("dir", err)
 			} else {
 				panic(err)
 			}
@@ -24,7 +25,7 @@ func TryGettingCurrentExecPath() string {
 	}
 
 	if debug.IS_ENABLED {
-		debug.InfoLabel("cmd", fmt.Sprintf("Current execuable directory is: %s", debug.FormatPath(CURRENT_PATH)))
+		debug.InfoLabel("dir", fmt.Sprintf("Current execuable directory is: %s", debug.FormatPath(CURRENT_PATH)))
 	}
 
 	return CURRENT_PATH
@@ -35,4 +36,16 @@ func CurrentExecPath(path ...string) string {
 		TryGettingCurrentExecPath()
 	}
 	return CURRENT_PATH + "/" + filepath.Join(path...)
+}
+
+func FormatDirNameIfHasSpaces(directoryName string) string {
+	if !strings.Contains(directoryName, " ") {
+		return directoryName
+	}
+
+	return fmt.Sprintf(
+		"%s_%d",
+		strings.ReplaceAll(directoryName, " ", "_"),
+		GetRandomString(7),
+	)
 }

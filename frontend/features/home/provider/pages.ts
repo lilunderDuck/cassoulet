@@ -3,7 +3,7 @@ import { BiSolidHome } from "solid-icons/bi"
 import { RiMediaGalleryFill } from "solid-icons/ri"
 // ...
 import HomePageTab from "../components/pages/HomePageTab"
-import GalleryPageTab from "../components/pages/gallery/GalleryPageTab"
+import GalleryPageTab from "../components/pages/gallery"
 import { BsGearFill } from "solid-icons/bs"
 
 export const SIDEBAR_ITEMS = [
