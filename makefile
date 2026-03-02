@@ -1,5 +1,5 @@
 dev:
-	wails dev -tags=TOAST_DEBUG
+	wails dev -tags=TOAST_DEBUG -skipembedcreate
 
 build:
 	wails build -ldflags="-s -w -buildid=" -skipembedcreate -trimpath

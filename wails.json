@@ -1,10 +1,12 @@
 {
   "$schema": "https://wails.io/schemas/config.v2.json",
-  "name": "Cassoulet",
+  "name": "cassoulet",
   "outputfilename": "cassoulet",
   "frontend:install": "bun install",
   "frontend:build": "bun run build",
   "frontend:dev:watcher": "bun run dev",
+  "frontend:dev:serverUrl": "http://localhost:3000",
+  "assetdir": "./build/bin/apps/cassoulet",
   "author": {
     "name": "",
     "email": "thisisjustalongtext@gmail.com"
