@@ -1,8 +1,9 @@
 package main
 
 import (
-	"embed"
+	"os"
 	"video_player/backend/app"
+	"video_player/backend/debug"
 	"video_player/backend/server"
 	"video_player/backend/utils"
 
@@ -12,11 +13,11 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options/windows"
 )
 
-//go:embed all:frontend/dist
-var assets embed.FS
-
 func main() {
-	utils.GetCurrentExecPath()
+	utils.TryGettingCurrentExecPath()
+	if debug.IS_ENABLED {
+		app.PrintAllPaths()
+	}
 
 	go server.StartServer()
 
@@ -33,7 +34,7 @@ func main() {
 			WebviewUserDataPath: utils.CURRENT_PATH,
 		},
 		AssetServer: &assetserver.Options{
-			Assets: assets,
+			Assets: os.DirFS(app.AppsPathLocation),
 		},
 		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
 		OnStartup:        thisApp.startup,
@@ -44,6 +45,8 @@ func main() {
 	})
 
 	if err != nil {
-		println("Error:", err.Error())
+		if debug.IS_ENABLED {
+			debug.ErrLabel("wails", err)
+		}
 	}
 }

@@ -12,15 +12,16 @@ type SettingData struct {
 	ShowPauseIndicator  bool `json:"showPauseIndicator"  cbor:"1,keyasint"`
 }
 
+var (
+	settingFilePath = filepath.Join(DataPathLocation, "settings.dat")
+)
+
 func (*Exports) UpdateSettingData(newSetting *SettingData) error {
-	err := utils.BSON_WriteFile(
-		filepath.Join(utils.CURRENT_PATH, DATA_PATH_LOCATION, "settings.dat"),
-		newSetting,
-	)
+	err := utils.BSON_WriteFile(settingFilePath, newSetting)
 
 	if debug.IS_ENABLED {
 		if err != nil {
-			debug.ErrLabel("setting", errors.New("Failed to save setting data"))
+			debug.ErrLabel("app/setting", errors.New("Failed to save setting data"))
 		}
 	}
 

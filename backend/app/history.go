@@ -14,15 +14,16 @@ type HistoryEntryData struct {
 	TimeOpened time.Time `json:"timeOpened"`
 }
 
+var (
+	openedFilesHistoryFilePath = filepath.Join(DataPathLocation, "history.dat")
+)
+
 func (*Exports) UpdateHistoryEntryData(newEntry []HistoryEntryData) error {
-	err := utils.BSON_WriteFile(
-		filepath.Join(utils.CURRENT_PATH, DATA_PATH_LOCATION, "history.dat"),
-		newEntry,
-	)
+	err := utils.BSON_WriteFile(openedFilesHistoryFilePath, newEntry)
 
 	if debug.IS_ENABLED {
 		if err != nil {
-			debug.ErrLabel("history", errors.New("Failed to save setting data"))
+			debug.ErrLabel("app/history", errors.New("Failed to save setting data"))
 		}
 	}
 
@@ -30,10 +31,10 @@ func (*Exports) UpdateHistoryEntryData(newEntry []HistoryEntryData) error {
 }
 
 func (*Exports) GetHistoryEntryData() []HistoryEntryData {
-	data, err := utils.BSON_ReadFile[[]HistoryEntryData](filepath.Join(utils.CURRENT_PATH, DATA_PATH_LOCATION, "history.dat"))
+	data, err := utils.BSON_ReadFile[[]HistoryEntryData](openedFilesHistoryFilePath)
 	if err != nil {
 		if debug.IS_ENABLED {
-			debug.WarnLabel("history", "it seems like there's no history data, using default value...")
+			debug.WarnLabel("app/history", "it seems like there's no history data, using default value...")
 		}
 
 		return []HistoryEntryData{}

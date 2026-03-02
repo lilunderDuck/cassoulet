@@ -1,13 +1,11 @@
 import { defineConfig } from 'vite';
 import solidPlugin from 'vite-plugin-solid';
 import Pages from 'vite-plugin-pages';
-import devtools from 'solid-devtools/vite';
 import { stylex } from 'vite-plugin-stylex-dev';
 import Macros from 'unplugin-macros/vite'
 
 export default defineConfig({
   plugins: [
-    devtools(),
     Pages({
       dirs: ['frontend/pages'],
     }),
@@ -25,5 +23,6 @@ export default defineConfig({
   },
   build: {
     target: 'esnext',
+    outDir: "./build/bin/apps/cassoulet"
   },
 });

@@ -10,12 +10,11 @@
     "**/node_modules": true,
     "**/*.md5": true,
     "frontend/out": true,
-    "frontend/dist": true
+    "frontend/dist": true,
+    "**/wailsjs": true
   },
   "editor.tabSize": 2,
   "explorer.compactFolders": false,
   "material-icon-theme.hidesExplorerArrows": true,
-  "deno.enable": false,
-  "makefile.configureOnOpen": true,
   "typescript.preferences.preferTypeOnlyAutoImports": true
 }

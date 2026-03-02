@@ -20,7 +20,7 @@ func formatLabel(name string) string {
 }
 
 func formatContent(content string) string {
-	return strings.ReplaceAll(content, "\n", "\n            | ")
+	return strings.ReplaceAll(content, "\n", "\n                | ")
 }
 
 func FormatPath(somePath string) string {

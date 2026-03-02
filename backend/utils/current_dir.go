@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"video_player/backend/debug"
@@ -8,7 +9,7 @@ import (
 
 var CURRENT_PATH = ""
 
-func GetCurrentExecPath() string {
+func TryGettingCurrentExecPath() string {
 	if CURRENT_PATH == "" {
 		executablePath, err := os.Executable()
 		if err != nil {
@@ -22,5 +23,16 @@ func GetCurrentExecPath() string {
 		CURRENT_PATH = filepath.Dir(executablePath)
 	}
 
+	if debug.IS_ENABLED {
+		debug.InfoLabel("cmd", fmt.Sprintf("Current execuable directory is: %s", debug.FormatPath(CURRENT_PATH)))
+	}
+
 	return CURRENT_PATH
+}
+
+func CurrentExecPath(path ...string) string {
+	if CURRENT_PATH == "" {
+		TryGettingCurrentExecPath()
+	}
+	return CURRENT_PATH + "/" + filepath.Join(path...)
 }

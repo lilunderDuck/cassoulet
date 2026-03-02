@@ -1,7 +1,7 @@
 package debug
 
 const (
-	LABEL_MAX_LENGTH     = 7
+	LABEL_MAX_LENGTH     = 10
 	LOG_LABEL_MAX_LENGTH = 4
 )
 

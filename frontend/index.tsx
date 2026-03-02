@@ -1,6 +1,5 @@
 /* @refresh reload */
 
-import 'solid-devtools'
 import './assets/index.css'
 import './assets/scrollbar.css'
 import './assets/button.css'
