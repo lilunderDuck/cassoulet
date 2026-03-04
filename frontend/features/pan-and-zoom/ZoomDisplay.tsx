@@ -31,6 +31,9 @@ const style = stylex.create({
     justifyContent: "center",
     alignItems: "center"
   },
+  changeCursorOnZooming: {
+    cursor: "grab"
+  },
   limitImgHeight: {
     maxHeight: "100vh"
   },
@@ -147,7 +150,7 @@ export function ZoomDisplay(props: ParentProps) {
         ref={draggableRef}
       >
         <div
-          {...stylex.attrs(style.image, internal$.zoomScale$() <= 1 ? style.limitImgHeight : {})}
+          {...stylex.attrs(style.image, internal$.zoomScale$() <= 1 ? style.limitImgHeight : style.changeCursorOnZooming)}
           id={__style.display}
           ref={imgRef}
         >

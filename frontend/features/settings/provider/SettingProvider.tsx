@@ -16,7 +16,8 @@ interface ISettingProviderProps {
 export function SettingProvider(props: ParentProps) {
   const [setting, setSetting] = createStore<app.SettingData>({
     showActuralProgress: true,
-    showPauseIndicator: true
+    showPauseIndicator: true,
+    resetZoomOnGoingNextOrPrevItem: false
   })
 
   return (

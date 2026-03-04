@@ -1,10 +1,12 @@
-import { createContext, createEffect, createResource, createSignal, onCleanup, ParentProps, Show, useContext, type Accessor, type Resource } from "solid-js"
+import { createContext, createEffect, createResource, createSignal, ParentProps, Show, useContext, type Accessor, type Resource } from "solid-js"
 import { GetGalleryMetadata } from "../../../wailsjs/go/app/Exports"
 import { app } from "../../../wailsjs/go/models"
 import { SpinningCube } from "../../../components"
 
 import stylex from "@stylexjs/stylex"
 import { useRegisterGlobalShortcutHandler } from "../../../utils"
+import { useSettingContext } from "../../settings"
+import { useZoomAndPanContext } from "../../pan-and-zoom"
 
 const style = stylex.create({
   loadingIcon: {
@@ -32,13 +34,18 @@ interface IGalleryProviderProps {
 }
 
 export function GalleryProvider(props: ParentProps<IGalleryProviderProps>) {
+  const { setting$ } = useSettingContext()
+  const { reset$: resetZoom } = useZoomAndPanContext()
+
   const [metadataResource] = createResource(async() => {
     const data = await GetGalleryMetadata(props.id$)
     setCurrentItem(data.entry[currentItemIndex()])
     return data
   })
   
-  const [currentItemIndex, setCurrentTimeIndex] = createSignal(0)
+  const [currentItemIndex, setCurrentTimeIndex] = createSignal(
+    parseInt(localStorage.getItem(props.id$) ?? "0")
+  )
   const [currentItem, setCurrentItem] = createSignal({} as app.GalleryItemEntry)
   const allGalleryItemsCount = () => metadataResource()!.entry.length
 
@@ -68,6 +75,10 @@ export function GalleryProvider(props: ParentProps<IGalleryProviderProps>) {
   
   const updateCurrentItem = () => {
     console.log("current item", currentItem())
+    localStorage.setItem(props.id$, `${currentItemIndex()}`)
+    if (setting$.resetZoomOnGoingNextOrPrevItem) {
+      resetZoom()
+    }
   }
 
   useRegisterGlobalShortcutHandler((currentKey) => {

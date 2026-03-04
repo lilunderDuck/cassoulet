@@ -19,6 +19,7 @@ const style = stylex.create({
     borderRadius: 6
   },
   dialog__section: {
+    marginBlock: 10
   },
   dialog__description: {
     fontSize: 14,

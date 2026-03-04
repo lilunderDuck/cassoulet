@@ -27,10 +27,12 @@ const style = stylex.create({
     marginTop: "var(--title-bar-thiccness)"
   },
   item__goToNextItemButton: {
-    right: 0
+    right: 0,
+    paddingLeft: 10
   },
   item__goToPrevItemButton: {
-    left: 0
+    left: 0,
+    paddingRight: 10
   },
   item__panAndZoomWrapper: {
     position: "absolute",

@@ -7,6 +7,6 @@ export type SettingSectionOptions = {
   component$: Component<SettingPageConfigProps>
 }
 
-export type SettingSectionConfig = Record<keyof app.SettingData, SettingSectionOptions>
+export type SettingSectionConfig = [keyof app.SettingData, SettingSectionOptions] | ["SETTING_SEPERATOR$"]
 
 export type SettingPageConfigProps<T extends any = any> = { state$: T }

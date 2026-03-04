@@ -10,7 +10,13 @@ import (
 type SettingData struct {
 	ShowActuralProgress bool `json:"showActuralProgress" cbor:"0,keyasint"`
 	ShowPauseIndicator  bool `json:"showPauseIndicator"  cbor:"1,keyasint"`
+
+	// ...
+
+	ResetZoomOnGoingNextOrPrevItem bool `json:"resetZoomOnGoingNextOrPrevItem"  cbor:"2,keyasint"`
 }
+
+var defaultSettingData = SettingData{}
 
 var (
 	settingFilePath = filepath.Join(DataPathLocation, "settings.dat")
