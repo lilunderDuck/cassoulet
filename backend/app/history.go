@@ -3,15 +3,16 @@ package app
 import (
 	"errors"
 	"path/filepath"
-	"time"
+
+	// "time"
 	"video_player/backend/debug"
 	"video_player/backend/utils"
 )
 
 type HistoryEntryData struct {
-	Name       string    `json:"name"`
-	Path       string    `json:"path"`
-	TimeOpened time.Time `json:"timeOpened"`
+	Name string `json:"name"`
+	Path string `json:"path"`
+	// TimeOpened time.Time `json:"timeOpened"`
 }
 
 var (

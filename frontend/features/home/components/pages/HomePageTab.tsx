@@ -67,7 +67,7 @@ export default function HomePageTab(props: IHomePageTabProps) {
       } as app.HistoryEntryData,
       ...(historyResource() ?? [])
     ])
-    goTo(`/video?path=${encodeURIComponent(path)}`)
+    goTo(`/preview?path=${encodeURIComponent(path)}`)
   }
 
   return (
