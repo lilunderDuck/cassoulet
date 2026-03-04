@@ -38,14 +38,18 @@ func CurrentExecPath(path ...string) string {
 	return CURRENT_PATH + "/" + filepath.Join(path...)
 }
 
-func FormatDirNameIfHasSpaces(directoryName string) string {
-	if !strings.Contains(directoryName, " ") {
-		return directoryName
+const DIRECTORY_NAME_MAX_LENGTH = 15
+
+func FormatDirName(directoryName string) string {
+	formatted := strings.ReplaceAll(directoryName, " ", "_")
+
+	if len(formatted) > DIRECTORY_NAME_MAX_LENGTH {
+		formatted = formatted[:DIRECTORY_NAME_MAX_LENGTH]
 	}
 
 	return fmt.Sprintf(
-		"%s_%d",
-		strings.ReplaceAll(directoryName, " ", "_"),
+		"%s_%s",
+		formatted,
 		GetRandomString(7),
 	)
 }

@@ -5,37 +5,10 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"video_player/backend/debug"
 	"video_player/backend/utils"
 )
-
-type PartialGalleryMetadata struct {
-	Name        string             `json:"name,omitempty"`
-	Icon        string             `json:"icon,omitempty"`
-	Id          string             `json:"id"`
-	Description string             `json:"description,omitempty"`
-	Entry       []GalleryItemEntry `json:"entry"`
-}
-
-type GalleryMetadata struct {
-	*PartialGalleryMetadata
-	Entry []GalleryItemEntry `json:"entry"`
-}
-
-type GalleryItemEntry struct {
-	FileName string `json:"fileName"`
-}
-
-var (
-	GalleryFolderPath       = filepath.Join(DataPathLocation, "gallery")
-	GalleryMetadataFilePath = filepath.Join(DataPathLocation, "gallery/%s/meta.json")
-	GalleryItemsPath        = filepath.Join(DataPathLocation, "gallery/%s/entry")
-)
-
-const DEBUG_LABEL_NAME = "app/gallery"
-const GALLERY_CACHE_COLLECTION_NAME = "gallery_items"
-
-var DEFAULT_GALLERY_DATA = []PartialGalleryMetadata{}
 
 func (this *Exports) GetAllGalleries() []PartialGalleryMetadata {
 	allData, err := this.CacheDb.ReadAll(GALLERY_CACHE_COLLECTION_NAME)
@@ -72,8 +45,6 @@ func (this *Exports) ResyncGallery() ([]PartialGalleryMetadata, error) {
 		return DEFAULT_GALLERY_DATA, nil
 	}
 
-	allGalleryMetadata := []PartialGalleryMetadata{}
-
 	for _, dirEntry := range allGalleryFolder {
 		dirName := dirEntry.Name()
 		if !dirEntry.IsDir() {
@@ -87,7 +58,7 @@ func (this *Exports) ResyncGallery() ([]PartialGalleryMetadata, error) {
 			debug.InfoLabel(DEBUG_LABEL_NAME, fmt.Sprintf("Found directory: %s", dirName))
 		}
 
-		metadata, err := this._generateMetadataFileIfNeeds(dirName)
+		metadata, err := this.generateMetadataFileIfNeeds(dirName)
 		if err != nil {
 			if debug.IS_ENABLED {
 				debug.InfoLabel(DEBUG_LABEL_NAME, fmt.Sprintf("An error occurred while trying to process: %s, skipping...", dirName))
@@ -95,7 +66,6 @@ func (this *Exports) ResyncGallery() ([]PartialGalleryMetadata, error) {
 			continue
 		}
 
-		allGalleryMetadata = append(allGalleryMetadata, *metadata.PartialGalleryMetadata)
 		this.CacheDb.Write(GALLERY_CACHE_COLLECTION_NAME, metadata.Name, metadata.PartialGalleryMetadata)
 	}
 
@@ -103,20 +73,20 @@ func (this *Exports) ResyncGallery() ([]PartialGalleryMetadata, error) {
 		debug.InfoLabel(DEBUG_LABEL_NAME, "Syncing done.")
 	}
 
-	return allGalleryMetadata, nil
+	return this.GetAllGalleries(), nil
 }
 
 const ERR_NOT_IN_CORRECT_STRUCTURE = "Failed to read gallery entry, not in the correct folder structure\nGallery id: %s\nOriginal error: %s"
 
 //
 
-func (this *Exports) _generateMetadataFileIfNeeds(galleryId string) (*GalleryMetadata, error) {
+func (this *Exports) generateMetadataFileIfNeeds(galleryId string) (*GalleryMetadata, error) {
 	metadata, err := this.GetGalleryMetadata(galleryId)
 	if err == nil {
 		if debug.IS_ENABLED {
 			debug.InfoLabel(DEBUG_LABEL_NAME, fmt.Sprintf("%s: has metadata file present", galleryId))
 		}
-		return metadata, nil
+		return metadata, this.validateGalleryMetadata(metadata)
 	}
 
 	if debug.IS_ENABLED {
@@ -152,7 +122,30 @@ func (this *Exports) _generateMetadataFileIfNeeds(galleryId string) (*GalleryMet
 		return nil, err
 	}
 
+	err = this.validateGalleryMetadata(metadata)
+	if err != nil {
+		return nil, err
+	}
+
 	return newMetadata, nil
+}
+
+func (this *Exports) validateGalleryMetadata(data *GalleryMetadata) error {
+	if strings.Contains(data.Id, " ") {
+		newDirName := utils.FormatDirName(data.Id)
+		if err := os.Rename(
+			filepath.Join(GalleryFolderPath, data.Id),
+			filepath.Join(GalleryFolderPath, newDirName),
+		); err != nil {
+			if debug.IS_ENABLED {
+				debug.ErrLabel(DEBUG_LABEL_NAME, err)
+			}
+
+			return err
+		}
+	}
+
+	return nil
 }
 
 func (*Exports) GetGalleryMetadata(galleryId string) (*GalleryMetadata, error) {
