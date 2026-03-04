@@ -4,7 +4,7 @@ import { app } from "../../../wailsjs/go/models"
 export type SettingSectionOptions = {
   name$: string
   description$: string
-  component$: Component<SettingPageConfigProps>
+  component$?: Component<SettingPageConfigProps>
 }
 
 export type SettingSectionConfig = [keyof app.SettingData, SettingSectionOptions] | ["SETTING_SEPERATOR$"]

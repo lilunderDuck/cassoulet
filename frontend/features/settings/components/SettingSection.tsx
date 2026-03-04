@@ -2,6 +2,7 @@ import stylex from "@stylexjs/stylex"
 import { useSettingContext, type SettingSectionOptions } from "../provider"
 import { SwitchInput } from "../../../components"
 import type { app } from "../../../wailsjs/go/models"
+import { Show } from "solid-js"
 
 const style = stylex.create({
   dialog: {
@@ -60,7 +61,10 @@ export default function SettingSection(props: ISettingSectionProps) {
       <p {...stylex.attrs(style.dialog__description)}>
         {props.description$}
       </p>
-      <props.component$ state$={setting$[props.propName$]} />
+      <Show when={props.component$}>
+        {/* @ts-ignore - already checked if undefined */}
+        <props.component$ state$={setting$[props.propName$]} />
+      </Show>
     </section>
   )
 }

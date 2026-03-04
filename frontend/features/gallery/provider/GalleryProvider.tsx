@@ -37,6 +37,10 @@ export function GalleryProvider(props: ParentProps<IGalleryProviderProps>) {
   const { setting$ } = useSettingContext()
   const { reset$: resetZoom } = useZoomAndPanContext()
 
+  if (!setting$.rememberLastGalleryItem) {
+    localStorage.removeItem(props.id$)
+  }
+
   const [metadataResource] = createResource(async() => {
     const data = await GetGalleryMetadata(props.id$)
     setCurrentItem(data.entry[currentItemIndex()])
@@ -75,7 +79,10 @@ export function GalleryProvider(props: ParentProps<IGalleryProviderProps>) {
   
   const updateCurrentItem = () => {
     console.log("current item", currentItem())
-    localStorage.setItem(props.id$, `${currentItemIndex()}`)
+    if (setting$.rememberLastGalleryItem) {
+      localStorage.setItem(props.id$, `${currentItemIndex()}`)
+    }
+
     if (setting$.resetZoomOnGoingNextOrPrevItem) {
       resetZoom()
     }

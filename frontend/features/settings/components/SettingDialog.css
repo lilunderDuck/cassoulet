@@ -1,0 +1,3 @@
+#settingDialog__sidebar [data-is-current=true] {
+  background-color: var(--dark-blue) !important;
+}

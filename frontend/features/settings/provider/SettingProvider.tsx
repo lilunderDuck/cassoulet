@@ -17,7 +17,8 @@ export function SettingProvider(props: ParentProps) {
   const [setting, setSetting] = createStore<app.SettingData>({
     showActuralProgress: true,
     showPauseIndicator: true,
-    resetZoomOnGoingNextOrPrevItem: false
+    resetZoomOnGoingNextOrPrevItem: false,
+    rememberLastGalleryItem: true
   })
 
   return (

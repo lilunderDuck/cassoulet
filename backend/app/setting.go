@@ -14,6 +14,7 @@ type SettingData struct {
 	// ...
 
 	ResetZoomOnGoingNextOrPrevItem bool `json:"resetZoomOnGoingNextOrPrevItem"  cbor:"2,keyasint"`
+	RememberLastGalleryItem        bool `json:"rememberLastGalleryItem"  cbor:"3,keyasint"`
 }
 
 var defaultSettingData = SettingData{}
