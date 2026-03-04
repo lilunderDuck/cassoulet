@@ -2,10 +2,11 @@ import { Portal } from "solid-js/web";
 import { For } from "solid-js"
 
 import stylex from "@stylexjs/stylex"
-import { type ISettingData, type SettingSectionConfig } from "../provider";
+import { type SettingSectionConfig } from "../provider";
 import { PauseIndicatorPreview, ProgressBarPreview } from "./stuff";
 import SettingSection from "./SettingSection";
 import { BsX } from "solid-icons/bs";
+import type { app } from "../../../wailsjs/go/models";
 
 const style = stylex.create({
   dialog: {
@@ -77,7 +78,7 @@ export function SettingDialog(props: ISettingDialogProps) {
 
           <For each={Object.entries(pageSetting)}>
             {([propName, pageSetting]) => (
-              <SettingSection {...pageSetting} propName$={propName as keyof ISettingData} />
+              <SettingSection {...pageSetting} propName$={propName as keyof app.SettingData} />
             )}
           </For>
         </div>

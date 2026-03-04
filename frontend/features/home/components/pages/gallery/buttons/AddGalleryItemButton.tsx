@@ -1,6 +1,8 @@
 import { BsPlus } from "solid-icons/bs";
 
 import stylex from "@stylexjs/stylex"
+import { ResyncGallery } from "../../../../../../wailsjs/go/app/Exports";
+import { toast } from "../../../../../solid-toast";
 
 const style = stylex.create({
   button: {
@@ -22,7 +24,7 @@ interface IAddGalleryItemButtonProps {
   // define your component props here
 }
 
-export default function AddGalleryItemButton(props: IAddGalleryItemButtonProps) {
+export function AddGalleryItemButton(props: IAddGalleryItemButtonProps) {
   return (
     <button {...stylex.attrs(style.button)} data-icon>
       <BsPlus size={50} />

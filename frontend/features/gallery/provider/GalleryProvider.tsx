@@ -4,6 +4,7 @@ import { app } from "../../../wailsjs/go/models"
 import { SpinningCube } from "../../../components"
 
 import stylex from "@stylexjs/stylex"
+import { useRegisterGlobalShortcutHandler } from "../../../utils"
 
 const style = stylex.create({
   loadingIcon: {
@@ -49,7 +50,8 @@ export function GalleryProvider(props: ParentProps<IGalleryProviderProps>) {
 
       return prevItemIndex + 1
     })
-    console.log("next item", currentItem())
+
+    updateCurrentItem()
   }
 
   const toPreviousItem = () => {
@@ -60,11 +62,16 @@ export function GalleryProvider(props: ParentProps<IGalleryProviderProps>) {
 
       return prevItemIndex - 1
     })
-    console.log("prev item", currentItem())
+
+    updateCurrentItem()
+  }
+  
+  const updateCurrentItem = () => {
+    console.log("current item", currentItem())
   }
 
-  const globalKeyboardShortcutHandler = (keyboardEvent: KeyboardEvent) => {
-    switch (keyboardEvent.key.toLowerCase()) {
+  useRegisterGlobalShortcutHandler((currentKey) => {
+    switch (currentKey) {
       case "d":
       case "arrowright":
         toNextItem()
@@ -75,18 +82,12 @@ export function GalleryProvider(props: ParentProps<IGalleryProviderProps>) {
         toPreviousItem()
       break
     }
-  }
-
-  document.addEventListener("keyup", globalKeyboardShortcutHandler)
+  })
 
   createEffect(() => {
     if (!metadataResource()) return
     const currentIndex = currentItemIndex()
     setCurrentItem(metadataResource()!.entry[currentIndex])
-  })
-
-  onCleanup(() => {
-    document.removeEventListener("keyup", globalKeyboardShortcutHandler)
   })
 
   return (

@@ -1,6 +1,7 @@
 import stylex from "@stylexjs/stylex"
-import { useSettingContext, type ISettingData, type SettingSectionOptions } from "../provider"
+import { useSettingContext, type SettingSectionOptions } from "../provider"
 import { SwitchInput } from "../../../components"
+import type { app } from "../../../wailsjs/go/models"
 
 const style = stylex.create({
   dialog: {
@@ -33,14 +34,14 @@ const style = stylex.create({
 })
 
 interface ISettingSectionProps extends SettingSectionOptions {
-  propName$: keyof ISettingData
+  propName$: keyof app.SettingData
 }
 
 export default function SettingSection(props: ISettingSectionProps) {
   const { setting$, _setSetting$ } = useSettingContext()
 
   const settingChanged = (propName: string, value: boolean) => {
-    _setSetting$(propName as keyof ISettingData, value)
+    _setSetting$(propName as keyof app.SettingData, value)
     console.log('Set', propName, '=', value)
   }
   

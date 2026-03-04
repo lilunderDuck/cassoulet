@@ -1,7 +1,7 @@
 import stylex from "@stylexjs/stylex"
 import __style from "./ZoomDisplay.module.css"
 import { useZoomAndPanContext } from "./ZoomAndPanProvider"
-import type { ParentProps } from "solid-js"
+import { createEffect, type ParentProps } from "solid-js"
 
 const style = stylex.create({
   imageDisplay: {
@@ -53,6 +53,17 @@ export function ZoomDisplay(props: ParentProps) {
   let imgRef!: Ref<"img">
 
   let dragStartMouseX = 0, dragStartMouseY = 0, diffX = 0, diffY = 0, positionX = 0, positionY = 0
+  createEffect(() => {
+    if (internal$.zoomScale$() == 1) {
+      dragStartMouseX = 0
+      dragStartMouseY = 0
+      diffX = 0
+      diffY = 0
+      positionX = 0
+      positionY = 0
+    }
+  })
+
   const dragStart = (e: MouseEvent) => {
     if (internal$.zoomScale$() <= 1) {
       return // don't do the dragging stuff

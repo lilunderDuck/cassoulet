@@ -1,10 +1,10 @@
 import { createContext, ParentProps, useContext } from "solid-js"
 import { createStore, Store, type SetStoreFunction } from "solid-js/store"
-import type { ISettingData } from "./data"
+import type { app } from "../../../wailsjs/go/models"
 
 interface ISettingContext {
-  setting$: Store<ISettingData>
-  _setSetting$: SetStoreFunction<ISettingData>
+  setting$: Store<app.SettingData>
+  _setSetting$: SetStoreFunction<app.SettingData>
 }
 
 const Context = createContext<ISettingContext>()
@@ -14,7 +14,7 @@ interface ISettingProviderProps {
 }
 
 export function SettingProvider(props: ParentProps) {
-  const [setting, setSetting] = createStore<ISettingData>({
+  const [setting, setSetting] = createStore<app.SettingData>({
     showActuralProgress: true,
     showPauseIndicator: true
   })

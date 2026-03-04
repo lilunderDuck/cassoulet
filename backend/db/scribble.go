@@ -13,15 +13,11 @@ import (
 // Version is the current version of the project
 const Version = "1.0.4"
 
-type (
-	// Driver is what is used to interact with the scribble database. It runs
-	// transactions, and provides log output
-	Driver struct {
-		mutex   sync.Mutex
-		mutexes map[string]*sync.Mutex
-		dir     string // the directory where scribble will create the database
-	}
-)
+type Driver struct {
+	mutex   sync.Mutex
+	mutexes map[string]*sync.Mutex
+	dir     string // the directory where scribble will create the database
+}
 
 // Options uses for specification of working golang-scribble
 type Options struct {
@@ -30,7 +26,9 @@ type Options struct {
 // New creates a new scribble database at the desired directory location, and
 // returns a *Driver to then use for interacting with the database
 func New(dir string, options *Options) (*Driver, error) {
-
+	if debug.IS_ENABLED {
+		debug.InfoLabel("db/cache", fmt.Sprintf("Opening database: %s", debug.FormatPath(dir)))
+	}
 	//
 	dir = filepath.Clean(dir)
 
@@ -50,7 +48,7 @@ func New(dir string, options *Options) (*Driver, error) {
 
 	// if the database doesn't exist create it
 	if debug.IS_ENABLED {
-		debug.InfoLabel("db/cache", fmt.Sprintf("Creating scribble database at '%s'...\n", dir))
+		debug.InfoLabel("db/cache", "No database existed, creating a new fresh one...\n")
 	}
 	return &driver, os.MkdirAll(dir, 0755)
 }
@@ -58,14 +56,29 @@ func New(dir string, options *Options) (*Driver, error) {
 // Write locks the database and attempts to write the record to the database under
 // the [collection] specified with the [resource] name given
 func (d *Driver) Write(collection, resource string, v interface{}) error {
+	if debug.IS_ENABLED {
+		debug.InfoLabel("db/cache", fmt.Sprintf(
+			"Writing data to cache...\nCollection: %s\nResource: %s\nData: %#v",
+			collection,
+			resource,
+			v,
+		))
+	}
+
 	// ensure there is a place to save record
 	if collection == "" {
-		return fmt.Errorf("Missing collection - no place to save record!")
+		if debug.IS_ENABLED {
+			debug.ErrLabel("db/cache", scribbleMissingCollection)
+		}
+		return scribbleMissingCollection
 	}
 
 	// ensure there is a resource (name) to save record as
 	if resource == "" {
-		return fmt.Errorf("Missing resource - unable to save record (no name)!")
+		if debug.IS_ENABLED {
+			debug.ErrLabel("db/cache", scribbleMissingResource)
+		}
+		return scribbleMissingResource
 	}
 
 	mutex := d.getOrCreateMutex(collection)
@@ -81,14 +94,19 @@ func (d *Driver) Write(collection, resource string, v interface{}) error {
 		return err
 	}
 
-	//
-	b, err := json.MarshalIndent(v, "", "\t")
+	b, err := json.Marshal(v)
 	if err != nil {
+		if debug.IS_ENABLED {
+			debug.ErrLabel("db/cache", err)
+		}
 		return err
 	}
 
 	// write marshaled data to the temp file
 	if err := os.WriteFile(tmpPath, b, 0644); err != nil {
+		if debug.IS_ENABLED {
+			debug.ErrLabel("db/cache", err)
+		}
 		return err
 	}
 
@@ -98,42 +116,77 @@ func (d *Driver) Write(collection, resource string, v interface{}) error {
 
 // Read a record from the database
 func (d *Driver) Read(collection, resource string, v interface{}) error {
+	if debug.IS_ENABLED {
+		debug.InfoLabel("db/cache", fmt.Sprintf(
+			"Reading data from cache...\nCollection: %s\nResource: %s\nData: %#v",
+			collection,
+			resource,
+			v,
+		))
+	}
 
 	// ensure there is a place to save record
 	if collection == "" {
-		return fmt.Errorf("Missing collection - no place to save record!")
+		if debug.IS_ENABLED {
+			debug.ErrLabel("db/cache", scribbleMissingCollection)
+		}
+		return scribbleMissingCollection
 	}
 
 	// ensure there is a resource (name) to save record as
 	if resource == "" {
-		return fmt.Errorf("Missing resource - unable to save record (no name)!")
+		if debug.IS_ENABLED {
+			debug.ErrLabel("db/cache", scribbleMissingResource)
+		}
+		return scribbleMissingResource
 	}
 
-	//
 	record := filepath.Join(d.dir, collection, resource)
 
 	// check to see if file exists
 	if _, err := stat(record); err != nil {
+		if debug.IS_ENABLED {
+			debug.ErrLabel("db/cache", err)
+		}
 		return err
 	}
 
 	// read record from database
 	b, err := os.ReadFile(record + ".json")
 	if err != nil {
+		if debug.IS_ENABLED {
+			debug.ErrLabel("db/cache", err)
+		}
 		return err
 	}
 
 	// unmarshal data
-	return json.Unmarshal(b, &v)
+	err = json.Unmarshal(b, &v)
+	if debug.IS_ENABLED {
+		if err != nil {
+			debug.ErrLabel("db/cache", err)
+		}
+	}
+
+	return err
 }
 
 // ReadAll records from a collection; this is returned as a slice of strings because
 // there is no way of knowing what type the record is.
 func (d *Driver) ReadAll(collection string) ([]string, error) {
+	if debug.IS_ENABLED {
+		debug.InfoLabel("db/cache", fmt.Sprintf(
+			"Reading all data from cache...\nCollection: %s",
+			collection,
+		))
+	}
 
 	// ensure there is a collection to read
 	if collection == "" {
-		return nil, fmt.Errorf("Missing collection - unable to record location!")
+		if debug.IS_ENABLED {
+			debug.ErrLabel("db/cache", scribbleMissingCollection)
+		}
+		return nil, scribbleMissingCollection
 	}
 
 	//
@@ -141,6 +194,9 @@ func (d *Driver) ReadAll(collection string) ([]string, error) {
 
 	// check to see if collection (directory) exists
 	if _, err := stat(dir); err != nil {
+		if debug.IS_ENABLED {
+			debug.ErrLabel("db/cache", err)
+		}
 		return nil, err
 	}
 
@@ -156,6 +212,9 @@ func (d *Driver) ReadAll(collection string) ([]string, error) {
 	for _, file := range files {
 		b, err := os.ReadFile(filepath.Join(dir, file.Name()))
 		if err != nil {
+			if debug.IS_ENABLED {
+				debug.ErrLabel("db/cache", err)
+			}
 			return nil, err
 		}
 
@@ -183,6 +242,9 @@ func (d *Driver) Delete(collection, resource string) error {
 
 	// if fi is nil or error is not nil return
 	case fi == nil, err != nil:
+		if debug.IS_ENABLED {
+			debug.ErrLabel("db/cache", err)
+		}
 		return fmt.Errorf("Unable to find file or directory named %v\n", path)
 
 	// remove directory and all contents
@@ -203,13 +265,18 @@ func stat(path string) (fi os.FileInfo, err error) {
 		fi, err = os.Stat(path + ".json")
 	}
 
+	if debug.IS_ENABLED {
+		if err != nil {
+			debug.ErrLabel("db/cache", err)
+		}
+	}
+
 	return
 }
 
 // getOrCreateMutex creates a new collection specific mutex any time a collection
 // is being modfied to avoid unsafe operations
 func (d *Driver) getOrCreateMutex(collection string) *sync.Mutex {
-
 	d.mutex.Lock()
 	defer d.mutex.Unlock()
 

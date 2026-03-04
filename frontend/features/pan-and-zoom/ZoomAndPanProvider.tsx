@@ -1,4 +1,5 @@
 import { type Accessor, createContext, createSignal, type ParentProps, type Signal, useContext } from "solid-js"
+import { useRegisterGlobalShortcutHandler } from "../../utils"
 
 interface IZoomAndPanContext {
   changeDisplayImage$(newImageUrl: string): void
@@ -28,22 +29,36 @@ export function ZoomAndPanProvider(props: ParentProps) {
     setImagePosition({ x: 0, y: 0 })
   }
 
+  const zoom = () => {
+    setScale(prev => prev + STEP)
+  }
+
+  const unzoom = () => {
+    setScale(prev => prev - STEP)
+
+    if (scale() <= 1) {
+      resetImagePosition()
+    }
+  }
+
+  const resetZoom = () => {
+    setScale(DEFAULT_ZOOM)
+    resetImagePosition()
+  }
+
+  useRegisterGlobalShortcutHandler((currentKey) => {
+    switch (currentKey) {
+      case "q": return unzoom()
+      case "e": return zoom()
+      case "r": return resetZoom()
+    }
+  })
+
   return (
     <Context.Provider value={{
-      zoom$() {
-        setScale(prev => prev + STEP)
-      },
-      unzoom$() {
-        setScale(prev => prev - STEP)
-
-        if (scale() <= 1) {
-          resetImagePosition()
-        }
-      },
-      reset$() {
-        setScale(DEFAULT_ZOOM)
-        resetImagePosition()
-      },
+      zoom$: zoom,
+      unzoom$: unzoom,
+      reset$: resetZoom,
       changeDisplayImage$(newImageUrl) {
         setDisplayImageUrl(newImageUrl)
         resetImagePosition()

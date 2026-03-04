@@ -1,11 +1,9 @@
-import { lazy } from "solid-js";
-
 import stylex from "@stylexjs/stylex"
 import { RiMediaGalleryFill } from "solid-icons/ri";
-import { GalleryItem } from "./GalleryItem";
-import AddGalleryItemButton from "./AddGalleryItemButton";
-import { CgSync } from "solid-icons/cg";
-import { Dialog } from "../../../../../components";
+import { GalleryItems } from "./GalleryItems";
+import { AddGalleryItemButton, SyncButton } from "./buttons";
+import { GalleryProvider } from "./GalleryProvider";
+import GalleryLoadingView from "./GalleryLoadingView";
 
 const style = stylex.create({
   gallery: {
@@ -40,10 +38,21 @@ const style = stylex.create({
     display: "flex",
     flexWrap: "wrap",
     gap: 10
+  },
+  gallery__button: {
+    width: "12rem",
+    height: "14.5rem",
+    backgroundColor: "var(--base)",
+    borderRadius: 6,
+    border: "4px solid transparent",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    ":hover": {
+      borderColor: "var(--sky)"
+    }
   }
 })
-
-const SyncingGalleryItemDialog = lazy(() => import("./dialog/SyncingGalleryItemDialog"))
 
 interface IGalleryPageTabProps {
   // define your component props here
@@ -51,29 +60,22 @@ interface IGalleryPageTabProps {
 
 export default function GalleryPageTab(props: IGalleryPageTabProps) {
   return (
-    <>
+    <GalleryProvider>
       <div {...stylex.attrs(style.gallery__headerWrap)}>
         <RiMediaGalleryFill size={30} />
         <h2 {...stylex.attrs(style.gallery__header)}>
           Gallery
         </h2>
         <div {...stylex.attrs(style.gallery__headerButtonRow)}>
-          <Dialog 
-            closeOnEscapeKeyDown={false} 
-            closeOnOutsideFocus={false} 
-            closeOnOutsidePointer={false}
-            Component$={SyncingGalleryItemDialog}
-          >
-            <button data-button data-icon data-no-background>
-              <CgSync />
-            </button>
-          </Dialog>
+          <SyncButton />
         </div>
       </div>
-      <div {...stylex.attrs(style.gallery__itemList)} data-scrollbar data-scrollbar-vertical>
-        <GalleryItem />
-        <AddGalleryItemButton />
-      </div>
-    </>
+      <GalleryLoadingView>
+        <div {...stylex.attrs(style.gallery__itemList)} data-scrollbar data-scrollbar-vertical>
+          <GalleryItems />
+          <AddGalleryItemButton />
+        </div>
+      </GalleryLoadingView>
+    </GalleryProvider>
   )
 }

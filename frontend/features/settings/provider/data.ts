@@ -1,10 +1,5 @@
 import type { Component } from "solid-js"
-import {} from "../../wailsjs/go/main/App"
-
-export interface ISettingData {
-  showActuralProgress: boolean
-  showPauseIndicator: boolean
-}
+import { app } from "../../../wailsjs/go/models"
 
 export type SettingSectionOptions = {
   name$: string
@@ -12,6 +7,6 @@ export type SettingSectionOptions = {
   component$: Component<SettingPageConfigProps>
 }
 
-export type SettingSectionConfig<T extends ISettingData = ISettingData> = Record<keyof T, SettingSectionOptions>
+export type SettingSectionConfig = Record<keyof app.SettingData, SettingSectionOptions>
 
 export type SettingPageConfigProps<T extends any = any> = { state$: T }

@@ -24,7 +24,7 @@ interface ISyncingGalleryProgressProps {
   numberOfSteps$: number
 }
 
-export function SyncingGalleryProgress(props: ISyncingGalleryProgressProps) {
+export function SyncGalleryProgress(props: ISyncingGalleryProgressProps) {
   const [currentStep, setCurrentStep] = createSignal()
 
   EventsOn("gallery__gatherItems", () => {

@@ -31,4 +31,6 @@ func (this *Exports) Init() error {
 	return err
 }
 
-func (this *Exports) CleanUp() {}
+func (this *Exports) CleanUp() {
+	this.CacheDb = nil
+}
